@@ -1,5 +1,19 @@
 body {
-	font-family: arial;
-	background-color: rgb(185,179,175);}
+	background-color: rgb(200,200,200);
+	color: white;
+	padding: 20px;
+	font-family: Arial, Verdana, sans-serif;
+}
 h1 {
-	color: rgb(255,255,255);}
+	background-color: DarkCyan;
+	padding: inherit;
+}
+h2 {
+	background-color: #ee3e80;
+	padding: inherit;
+}
+p {
+	background-color: white;
+	color: #665544;
+	padding: inherit;
+}
