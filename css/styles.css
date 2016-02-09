@@ -1,19 +1,25 @@
+html, body {
+	overflow-x: hidden;
+	margin: 0;
+	padding: 0;
+}
 body {
-	background-color: rgb(200,200,200);
+	background-color: #EE3E80;
 	color: white;
-	padding: 20px;
 	font-family: Arial, Verdana, sans-serif;
 }
-h1 {
-	background-color: DarkCyan;
-	padding: inherit;
+#titleCard {
+	text-align: center;
+	min-width: 100%;
+	font-size: 900%;
+	padding-top: 0.25em;
+	padding-bottom: 0.25em;
 }
-h2 {
-	background-color: #ee3e80;
-	padding: inherit;
-}
-p {
-	background-color: white;
-	color: #665544;
-	padding: inherit;
+h2, .bandTag {
+	margin: 0 -9999rem;
+	padding: 2.5rem 9999rem;
+	font-size: 4rem;
+	text-align: center;
+	background: #008B8B;
+	text-align: middle;
 }
