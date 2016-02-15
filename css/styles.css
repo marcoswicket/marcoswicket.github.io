@@ -20,6 +20,43 @@ h2, .bandTag {
 	padding: 2.5rem 9999rem;
 	font-size: 4rem;
 	text-align: center;
-	background: #008B8B;
+	background: #FFFFFF;
 	text-align: middle;
+	color: #2C2F8C;
+}
+
+#animation {
+	width: 12rem;
+	height: 12rem;
+	margin: 0 auto;
+	background-color: #EE3E80;
+	animation: square-to-circle 2s .5s infinite cubic-bezier(1,.015,.295,1.225) alternate;
+}
+
+@keyframes square-to-circle {
+	0%  {
+		border-radius:0 0 0 0;
+		background: #EE3E80;
+		transform:rotate(0deg);
+	}
+	25%  {
+		border-radius:50% 0 0 0;
+		background:	#008B8B;
+		transform:rotate(45deg);
+	}
+	50%  {
+		border-radius:50% 50% 0 0;
+		background: #FE5292;
+		transform:rotate(90deg);
+	}
+	75%  { 
+		border-radius:50% 50% 50% 0;
+		background: #00EBEB;
+		transform:rotate(135deg);
+	}
+	100% {  
+		border-radius:50%;
+		background: #FF83B1;
+		transform:rotate(180deg);
+	}
 }
