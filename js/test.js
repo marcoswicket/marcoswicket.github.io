@@ -2,7 +2,7 @@ window.onload = function () {
 	var canvas = document.getElementById('canvas'),
 	context = canvas.getContext('2d'),
 	particles = [],
-	numParticles = 350,
+	numParticles = 300,
 	minDist = 100,
 	springAmount = 0.0005;
 
