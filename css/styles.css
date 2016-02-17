@@ -47,16 +47,16 @@ h2, .bandTag {
 	50%  {
 		border-radius:50% 50% 0 0;
 		background: #FE5292;
-		transform:rotate(90deg);
+		transform:rotate(0deg);
 	}
 	75%  { 
 		border-radius:50% 50% 50% 0;
 		background: #00EBEB;
-		transform:rotate(135deg);
+		transform:rotate(45deg);
 	}
 	100% {  
 		border-radius:50%;
 		background: #FF83B1;
-		transform:rotate(180deg);
+		transform:rotate(0deg);
 	}
 }
