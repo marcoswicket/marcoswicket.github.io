@@ -81,10 +81,10 @@ img {
 }
 
 p {
+	max-width: 35em;
 	padding-top: 2vh;
 	font-size: 2vh;
-	text-align: center;
+	text-align: left;
 	font-family: Helvetica;
-	padding-left: 5vw;
 	margin: 0;
 }
