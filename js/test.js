@@ -2,7 +2,7 @@ window.onload = function () {
 	var canvas = document.getElementById('canvas'),
 	context = canvas.getContext('2d'),
 	particles = [],
-	numParticles = 300,
+	numParticles = 150,
 	minDist = 100,
 	springAmount = 0.0005;
 
@@ -60,18 +60,22 @@ window.onload = function () {
 	}
 
 	function draw (particle) {
-		particle.draw(context);
+		//particle.draw(context);
 	}
 
 	(function drawFrame () {
 
 		canvas.width = window.innerWidth;
-		canvas.height = window.innerHeight;
+		canvas.height = window.innerHeight * 0.20;
 
 		window.requestAnimationFrame(drawFrame, canvas);
 		context.clearRect(0, 0, canvas.width, canvas.height);
 
 		particles.forEach(move);
-		particles.forEach(draw);
+		//particles.forEach(draw);
+
+		context.font = '50pt Helvetica';
+      	context.fillStyle = 'white';
+    	context.fillText('KAIROSCOPE', window.innerWidth/2 - 250, window.innerHeight * 0.128);
 	}());
 };
