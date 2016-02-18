@@ -8,14 +8,16 @@ window.onload = function () {
 
 	generateParticles(numParticles);
 
+
+
 	function generateParticles(numParticles) {
 		for (var size, particle, i = 0; i < numParticles; i++) {
 			size = 3;
 			particle = new Ball(size, "#ffffff");
 			particle.x = Math.random() * window.innerWidth;
-			particle.y = Math.random() * window.innerHeight;
-			particle.vx = Math.random() * 6 - 3;
-			particle.vy = Math.random() * 6 - 3;
+			particle.y = Math.random() * window.innerHeight * 0.2;
+			particle.vx = Math.random() * (window.innerHeight * 0.004) - Math.random();
+			particle.vy = Math.random() * (window.innerWidth * 0.0015) - Math.random();
 			particle.mass = 9;
 			particles.push(particle);
 		}
@@ -73,9 +75,9 @@ window.onload = function () {
 		}
 	}
 
-	function draw (particle) {
+	//function draw (particle) {
 		//particle.draw(context);
-	}
+	//}
 
 	(function drawFrame () {
 
