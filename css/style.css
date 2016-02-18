@@ -57,8 +57,8 @@ hr {
     padding-top: 0;
     padding-bottom: 0;
 
-    padding-left: 25%;
-    padding-right: 25%;
+    padding-left: 25vw;
+    padding-right: 25vw;
 }
 .inlineblock { 
     display: inline-block;
