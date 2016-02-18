@@ -1,8 +1,10 @@
 window.onload = function () {
 	var canvas = document.getElementById('canvas'),
 	context = canvas.getContext('2d'),
+	canvas2 = document.getElementById('canvas2'),
+	context2 = canvas2.getContext('2d'),
 	particles = [],
-	numParticles = window.innerWidth * 0.105,
+	numParticles = window.innerWidth * 0.105 * 0.02,
 	minDist = 100,
 	springAmount = 0.0005;
 
@@ -84,8 +86,13 @@ window.onload = function () {
 		canvas.width = window.innerWidth;
 		canvas.height = window.innerHeight * 0.20;
 
+		canvas2.width = window.innerWidth;
+		canvas2.height = window.innerHeight * 0.20;
+
 		window.requestAnimationFrame(drawFrame, canvas);
+		window.requestAnimationFrame(drawFrame, canvas2);
 		context.clearRect(0, 0, canvas.width, canvas.height);
+		context.clearRect(0, 0, canvas2.width, canvas2.height);
 
 		particles.forEach(move);
 		//particles.forEach(draw);
