@@ -2,19 +2,33 @@ window.onload = function () {
 	var canvas = document.getElementById('canvas'),
 	context = canvas.getContext('2d'),
 	particles = [],
-	numParticles = 150,
+	numParticles = window.innerWidth * 0.1,
 	minDist = 100,
 	springAmount = 0.0005;
 
-	for (var size, particle, i = 0; i < numParticles; i++) {
-		size = 3;
-		particle = new Ball(size, "#ffffff");
-		particle.x = Math.random() * window.innerWidth;
-		particle.y = Math.random() * window.innerHeight;
-		particle.vx = Math.random() * 6 - 3;
-		particle.vy = Math.random() * 6 - 3;
-		particle.mass = 9;
-		particles.push(particle);
+	generateParticles(numParticles);
+
+	function generateParticles(numParticles) {
+		for (var size, particle, i = 0; i < numParticles; i++) {
+			size = 3;
+			particle = new Ball(size, "#ffffff");
+			particle.x = Math.random() * window.innerWidth;
+			particle.y = Math.random() * window.innerHeight;
+			particle.vx = Math.random() * 6 - 3;
+			particle.vy = Math.random() * 6 - 3;
+			particle.mass = 9;
+			particles.push(particle);
+		}
+	}
+
+	window.onresize = function cleanParticles()
+	{
+		for(var i = 0 ; i < numParticles ; i++)
+		{
+			particles.splice(i);
+		}
+		numParticles = window.innerWidth * 0.1;
+		generateParticles(numParticles);
 	}
 
 	function spring (partA, partB) {
@@ -74,8 +88,10 @@ window.onload = function () {
 		particles.forEach(move);
 		//particles.forEach(draw);
 
-		context.font = '50pt Helvetica';
+		var fontSize = window.innerWidth * 0.03	 + 'pt';
+
+		context.font = fontSize + ' Helvetica';
       	context.fillStyle = 'white';
-    	context.fillText('KAIROSCOPE', window.innerWidth/2 - 250, window.innerHeight * 0.128);
+    	context.fillText('KAIROSCOPE', window.innerWidth*0.38, window.innerHeight * 0.128);
 	}());
 };
