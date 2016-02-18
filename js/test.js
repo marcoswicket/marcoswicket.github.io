@@ -2,7 +2,7 @@ window.onload = function () {
 	var canvas = document.getElementById('canvas'),
 	context = canvas.getContext('2d'),
 	particles = [],
-	numParticles = window.innerWidth * 0.1,
+	numParticles = window.innerWidth * 0.11,
 	minDist = 100,
 	springAmount = 0.0005;
 
@@ -29,7 +29,7 @@ window.onload = function () {
 		{
 			particles.splice(i);
 		}
-		numParticles = window.innerWidth * 0.1;
+		numParticles = window.innerWidth * 0.11;
 		generateParticles(numParticles);
 	}
 
