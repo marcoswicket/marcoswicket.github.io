@@ -16,24 +16,25 @@ body {
 	overflow-x: hidden;
 }
 
-.container1 {
+.container {
 	height: 20%;
+}
+
+
+.banner {
+	position: absolute;
+	margin: 0;
+	padding: 0;
+	color: #FFFFFF;
+	z-index: 999;
 }
 
 #canvas {
 	position: relative;
 	background-color: #000;
 	display: block;
-}
-
-.container2 {
-	height: 20%;
-}
-
-#canvas2 {
-	position: relative;
-	background-color: #000;
-	display: block;
+	height: 50%;
+	z-index: 990;
 }
 
 hr {
@@ -64,7 +65,7 @@ hr {
     zoom: 1;
     display*: inline; /* ie hack */
     
-    border: 0.2vw solid #CCCCCC;
+    border: 3px solid #ccc;
 	padding: 20px;
 	border-radius: 10px;
 	-moz-border-radius: 10px;
@@ -82,8 +83,8 @@ img {
 p {
 	max-width: 35em;
 	padding-top: 2vh;
-	font-size: 2.5vh;
-	text-align: justify;
+	font-size: 2vh;
+	text-align: left;
 	font-family: Helvetica;
 	margin: 0;
 }
