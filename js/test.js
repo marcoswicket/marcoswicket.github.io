@@ -59,14 +59,14 @@ window.onload = function () {
 	function move (partA, i) {
 		partA.x += partA.vx;
 		partA.y += partA.vy;
-		if (partA.x > canvas.width) {
+		if (partA.x > canvas.width + 20) {
 			partA.x = 0;
-		} else if (partA.x < 0) {
+		} else if (partA.x < -20) {
 			partA.x = canvas.width;
 		}
-		if (partA.y > canvas.height) {
+		if (partA.y > canvas.height + 20) {
 			partA.y = 0;
-		} else if (partA.y < 0) {
+		} else if (partA.y < -20) {
 			partA.y = canvas.height;
 		}
 		for (var partB, j = i + 1; j < numParticles; j++) {
