@@ -145,7 +145,8 @@ Star.prototype.getBounds = function() {
 
 Star.prototype.destroyWorld = function (destroyWorldSignal) {
 	this.destroyWorldFlag = destroyWorldSignal;
-	this.activateFall = true;
+	this.activateFall = false;
+	this.keyPressed = 0;
 };
 
 Star.prototype.gravityChange = function (keyPressed) {
