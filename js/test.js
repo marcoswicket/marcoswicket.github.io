@@ -29,7 +29,7 @@ window.onload = function () {
 		{
 			particles.splice(i);
 		}
-		numParticles = window.innerWidth * 0.97;
+		numParticles = window.innerWidth * 0.105;
 		generateParticles(numParticles);
 	}
 
