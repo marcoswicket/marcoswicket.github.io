@@ -118,12 +118,12 @@ Star.prototype.updateMove = function () {
 			var x2 = this.centerX - this.x;
 			var y2 = this.centerY - this.y;
 			this.radius = Math.sqrt(Math.abs((x2 * x2) + (y2 * y2)));
-			this.ax = (x2) / 1500;
-			this.ay = (y2) / 1500;
-			this.vx += this.ax
-			this.vy += this.ay
-			this.x += this.vx;
-			this.y += this.vy;
+			this.ax = (x2);
+			this.ay = (y2);
+			this.vx += this.ax / 3200;
+			this.vy += this.ay / 3200;
+			if(this.x != this.centerX) { this.x += this.vx; }
+			if(this.y != this.centerY) { this.y += this.vy; }
 
 		}
 	}
