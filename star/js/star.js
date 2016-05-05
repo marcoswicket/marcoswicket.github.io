@@ -113,7 +113,6 @@ Star.prototype.updateMove = function () {
 			this.spiralToOriginal = false;
 			this.keyPressed = 0;
 			this.radius = 300;
-			console.log("YES");
 		} else {
 			var x2 = this.centerX - this.x;
 			var y2 = this.centerY - this.y;
