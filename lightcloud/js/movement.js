@@ -5,8 +5,8 @@ window.onload = function () {
     particles = [],
     numParticles = 4000,
     fl = 250,
-    vpX = window.innerWidth / 4,
-    vpY = window.innerHeight / 4,
+    vpX = window.innerWidth / 8,
+    vpY = window.innerHeight / 8,
     angleX, angleY;
 
     canvas.width = window.innerWidth;
@@ -14,9 +14,9 @@ window.onload = function () {
 
     for (var particle, i = 0; i < numParticles; i++) {
         particle = new Star(Math.floor(Math.random() * 20) + 30);
-        particle.xpos = Math.floor(Math.random() * 4000);
-        particle.ypos = Math.floor(Math.random() * 4000);
-        particle.zpos = Math.floor(Math.random() * 4000);
+        particle.xpos = Math.floor(Math.random() * 1000);
+        particle.ypos = Math.floor(Math.random() * 1000);
+        particle.zpos = 1000;
         particles.push(particle);
     }
     
