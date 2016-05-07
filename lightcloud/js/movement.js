@@ -3,10 +3,10 @@ window.onload = function () {
     context = canvas.getContext('2d'),
     mouse = utils.captureMouse(canvas),
     particles = [],
-    numParticles = 4000,
+    numParticles = 150,
     fl = 250,
-    vpX = window.innerWidth / 8,
-    vpY = window.innerHeight / 8,
+    vpX = window.innerWidth / 6,
+    vpY = window.innerHeight / 6,
     angleX, angleY;
 
     canvas.width = window.innerWidth;
@@ -14,9 +14,9 @@ window.onload = function () {
 
     for (var particle, i = 0; i < numParticles; i++) {
         particle = new Star(Math.floor(Math.random() * 20) + 30);
-        particle.xpos = Math.floor(Math.random() * 1000);
-        particle.ypos = Math.floor(Math.random() * 1000);
-        particle.zpos = 1000;
+        particle.xpos = Math.random() * 200 - 100;
+        particle.ypos = Math.random() * 200 - 100;
+        particle.zpos = Math.random() * 200 - 100;
         particles.push(particle);
     }
     

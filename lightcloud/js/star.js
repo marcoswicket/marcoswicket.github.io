@@ -16,9 +16,9 @@ function Star(size) {
 
 	this.alpha = 1;
 	this.alphaSpeed = Math.random() * (0.10) + 0.02;
-	this.r = Math.floor(Math.random() * 236);
+	this.r = Math.floor(Math.random() * 256);
 	this.g = this.r;
-	this.b = (this.r > 70) ? 255 : Math.floor(Math.random() * (256 - 125) + 30);
+	this.b = (this.r > 125) ? 255 : Math.floor(Math.random() * (256 - 125) + 125);
 
 	this.color = 'rgba(' + this.r + ',' + this.g + ',' + this.b + ',' + this.alpha + ')';
 	this.visible = true;
