@@ -1,3 +1,11 @@
+import * as PIXI from 'pixi.js';
+import * as Matter from 'matter-js';
+
+import { Camera } from './src/camera/camera.js';
+import { Bird } from './src/character/bird.js';
+import { WorldMap } from './src/old/worldmap.js';
+import { UI } from './src/ui/ui.js';
+
 const app = new PIXI.Application();
 
 await app.init({ background: '#1099bb', resizeTo: window });
@@ -13,6 +21,7 @@ const backgroundContainer = new PIXI.Container();
 const mainContainer = new PIXI.Container();
 
 const camera = new Camera(app);
+camera.setBounds(0, 0, 2000, 1500);
 
 camera.worldContainer.addChild(backgroundContainer);
 camera.worldContainer.addChild(mainContainer);
@@ -27,7 +36,7 @@ worldmap.layers.forEach(layer =>
 worldmap.setCamera(camera);
 
 // create player
-const bird = new Bird(app, engine);
+const bird = new Bird(app, engine, camera);
 bird.setupControls(app);
 gameContainer.addChild(bird.graphics);
 
