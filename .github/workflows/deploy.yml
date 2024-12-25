@@ -22,7 +22,7 @@ jobs:
       
       - name: Build Particle
         run: |
-          cp particle dist/
+          cp -r particle dist/
 
       - name: Build FatBird
         run: |
