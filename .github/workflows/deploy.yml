@@ -19,6 +19,10 @@ jobs:
           mkdir -p dist
           cp index.html dist/
           cp CNAME dist/
+      
+      - name: Build Particle
+        run: |
+          cp particle dist/
 
       - name: Build FatBird
         run: |
