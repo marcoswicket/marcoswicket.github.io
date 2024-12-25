@@ -2,7 +2,7 @@ import { defineConfig } from "vite"
 import { resolve } from 'path'
 
 export default defineConfig({
-    base: 'marcoswicket.github.io',
+    base: '/fatbird/',
     assetsInclude: ['**/*.vert', '**/*.frag'],
     build: {
         outDir: 'dist',
