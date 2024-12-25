@@ -2,7 +2,9 @@ name: Deploy to GitHub Pages
 
 on:
   push:
-    branches: [ main ]  # or master
+    branches: [ main ]
+    paths:
+      - 'fatbird/**'
 
 jobs:
   build-and-deploy:
@@ -16,13 +18,18 @@ jobs:
           node-version: '16'
 
       - name: Install Dependencies
-        run: npm install
+        run: |
+          cd fatbird 
+          npm install
 
       - name: Build
-        run: npm run build
+        run: |
+          cd fatbird
+          npm run build
 
       - name: Deploy
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./dist
+          publish_dir: ./folder-name/dist  
+          destination_dir: fatbird
