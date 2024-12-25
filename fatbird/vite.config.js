@@ -1,20 +1,9 @@
-import { defineConfig } from "vite"
-import { resolve } from 'path'
+// vite.config.js
+import { defineConfig } from 'vite'
 
 export default defineConfig({
-    base: '/fatbird/',
-    assetsInclude: ['**/*.vert', '**/*.frag'],
-    build: {
-        outDir: 'dist',
-        target: 'esnext',
-        sourcemap: true,
-    },
-    resolve: {
-        alias: {
-            'pixi.js': resolve(__dirname, 'node_modules/pixi.js/dist/pixi.mjs'),
-        }
-    },
-    optimizeDeps: {
-        include: ['matter-js']
-    }
-});
+  base: './', // This is important for GitHub Pages
+  build: {
+    outDir: 'dist',
+  }
+})
