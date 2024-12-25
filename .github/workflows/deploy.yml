@@ -1,9 +1,3 @@
-name: Deploy to GitHub Pages
-
-on:
-  push:
-    branches: [ master ]
-
 token: ${{ secrets.GITHUB_TOKEN }}
 name: Deploy to GitHub Pages
 
