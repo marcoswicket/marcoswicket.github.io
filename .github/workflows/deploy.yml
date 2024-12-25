@@ -14,10 +14,10 @@ jobs:
       - name: Checkout 🛎️
         uses: actions/checkout@v3
 
-      - name: Setup Dist
+      - name: Setup Root Files
         run: |
           mkdir -p dist
-          cp -r particle dist/
+          cp index.html dist/
 
       - name: Build FatBird
         run: |
