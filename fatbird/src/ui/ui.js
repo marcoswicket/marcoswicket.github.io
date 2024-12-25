@@ -41,9 +41,8 @@ export class UI
     createPanel(x, y, width, height, layer = 'middle')
     {
         const panel = new PIXI.Graphics();
-        panel.beginFill(0x000000, 0.5);
-        panel.drawRect(0, 0, width, height);
-        panel.endFill();
+        panel.rect(0, 0, width, height);
+        panel.fill(0x000000, 0.5);
         panel.x = x;
         panel.y = y;
 
@@ -56,9 +55,8 @@ export class UI
         const button = new PIXI.Container();
 
         const bg = new PIXI.Graphics();
-        bg.beginFill(0x444444);
-        bg.drawRoundedRect(0, 0, 100, 40, 10);
-        bg.endFill();
+        bg.roundRect(0, 0, 100, 40, 10);
+        panel.fill(0x444444);
 
         const txt = new PIXI.Text(text, {
             fontSize: 16,
@@ -122,9 +120,8 @@ export class UI
         const meter = new PIXI.Container();
 
         const background = new PIXI.Graphics();
-        background.beginFill(0x333333);
-        background.drawRect(0, 0, 100, 10);
-        background.endFill();
+        background.rect(0, 0, 100, 10);
+        background.fill(0x333333);
 
         const foreground = new PIXI.Graphics();
         meter.addChild(background);
@@ -136,9 +133,8 @@ export class UI
         meter.update = (percentage) =>
         {
             foreground.clear();
-            foreground.beginFill(0xFF0000);
-            foreground.drawRect(0, 0, percentage, 10);
-            foreground.endFill();
+            foreground.rect(0, 0, percentage, 10);
+            foreground.fill(0xFF0000);
         };
 
         return meter;

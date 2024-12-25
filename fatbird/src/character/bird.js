@@ -1,147 +1,342 @@
 import * as PIXI from 'pixi.js';
 import * as Matter from 'matter-js';
 
-export class Bird 
+export class Bird
 {
-    constructor(app, engine, camera)
-    {
-        this.app = app;
-        this.engine = engine;
-        this.camera = camera;
-        this.screenX = app.screen.width / 3;
-        this.screenY = app.screen.height / 2;
-        this.worldX = 0;
-        this.worldY = this.screenY;
+	constructor(app, engine, camera)
+	{
+		this.app = app;
+		this.engine = engine;
+		this.camera = camera;
+		this.size = 30;
 
-        // draw triangle
-        this.size = 30;
-        this.graphics = new PIXI.Graphics();
-        this.graphics.beginFill(0xFF0000);
-        this.graphics.moveTo(this.size, 0);
-        this.graphics.lineTo(-this.size, -this.size);
-        this.graphics.lineTo(-this.size, this.size);
-        this.graphics.lineTo(this.size, 0);
-        this.graphics.endFill();
+		// Initial position at center of screen
+		// TODO: NOT WORKING STARTING IN THE CORNER RIGHT NOW
+		this.worldX = app.screen.width / 2;
+		this.worldY = app.screen.height / 2;
 
-        this.graphics.x = this.screenX;
-        this.graphics.y = this.screenY;
+		// States
+		this.STATES = {
+			CONTROLLED: 'controlled',
+			FREE: 'free',
+			STABILIZING: 'stabilizing',
+			HOVER: 'hover'
+		};
 
-        this.body = Matter.Bodies.polygon(this.screenX, this.screenY, 3, this.size, {
-            friction: 0.1,
-            restitution: 0.6,
-        });
+		this.velocity = { x: 0, y: 0 };
+		this.gravity = 0.15;
+		this.followForce = 0.3;
+		this.maxUpwardSpeed = 8;
+		this.maxDiveSpeed = 12;
+		this.stabilizeForce = 0.15;
+		this.stabilizeGravityResist = 0.2;
 
-        Matter.World.add(this.engine.world, this.body);
+		// Boost/Energy system
+		this.maxBoost = 100;
+		this.currentBoost = this.maxBoost;
+		this.boostDrainRate = 1.2;
+		this.boostRecoveryRate = 0.5;
+		this.minUpwardVelocity = -8;
+		this.maxUpwardVelocity = -2;
 
-        this.isFlying = false;
-        this.fallSpeed = 0;
-        this.velocity = { x: 5, y: 0 };
+		// Dive boost mechanics
+		this.isDiving = false;
+		this.diveBoostTimer = 0;
+		this.diveBoostDuration = 30 * 2;
+		this.diveAngleThreshold = Math.PI / 3;
+		this.divingSpeed = 0.6;
+		this.currentState = this.STATES.HOVER;
+		this.previousY = 0;
 
-        this.maxUpwardSpeed = -15;    // Maximum upward velocity
-        this.maxDownwardSpeed = 15;    // Maximum falling velocity
-        this.constantXSpeed = 5;       // Constant horizontal speed
-        this.boostForce = 0;          // Current boost force
-        this.maxBoostForce = 1;       // Maximum boost force
-        this.boostChargeRate = 0.05;   // How fast boost builds up
-        this.boostDecayRate = 0.1;    // How fast boost depletes
+		this.targetX = this.worldX;
+		this.targetY = this.worldY;
 
-        window.addEventListener('resize', () =>
-        {
-            this.screenX = window.innerWidth / 3;
-        });
-    }
+		this.lastClickTime = 0;
+		this.clickCooldown = 200;
 
-    update()
-    {
-        if (this.isFlying)
-        {
-            const fallSpeedMultiplier = Math.min(Math.abs(this.velocity.y) / 10, 1);
-            this.boostForce = Math.min(
-                this.boostForce + this.boostChargeRate * fallSpeedMultiplier,
-                this.maxBoostForce
-            );
-        }
-        else
-        {
-            this.boostForce = Math.max(0, this.boostForce - this.boostDecayRate);
-        }
+		this.setupGraphics();
+		this.setupPhysics();
+		this.setupControls(app);
+	}
 
-        // gravity
-        // this.velocity.y += this.engine.gravity.y * this.engine.timing.timeScale;
+	setupGraphics()
+	{
+		if (this.graphics)
+		{
+			this.app.stage.removeChild(this.graphics);
+		}
 
-        if (this.isFlying && this.boostForce > 0)
-        {
-            this.velocity.y -= this.boostForce;
-        }
+		this.graphics = new PIXI.Graphics();
 
-        this.velocity.y = Math.max(
-            this.maxUpwardSpeed,
-            Math.min(this.maxDownwardSpeed, this.velocity.y)
-        );
+		this.graphics.moveTo(this.size, 0);
+		this.graphics.lineTo(-this.size, -this.size);
+		this.graphics.lineTo(-this.size, this.size);
+		this.graphics.lineTo(this.size, 0);
+		this.graphics.fill(0xFF0000);
 
-        this.velocity.x = this.constantXSpeed;
+		this.graphics.circle(this.size / 2, -this.size / 4, 3);
+		this.graphics.fill(0xFFFFFF);
 
-        this.worldX += this.velocity.x;
-        this.worldY += this.velocity.y;
+		this.graphics.x = this.worldX;
+		this.graphics.y = this.worldY;
+	}
 
-        this.fallSpeed = this.velocity.y;
+	setupPhysics()
+	{
+		this.body = Matter.Bodies.polygon(this.worldX, this.worldY, 3, this.size, {
+			friction: 0.1,
+			restitution: 0.6,
+			density: 0.001,
+			frictionAir: 0.01
+		});
 
-        this.graphics.x = this.screenX;
-        this.graphics.y = this.worldY;
-        this.graphics.rotation = Math.atan2(this.velocity.y, this.velocity.x);
+		this.body.inertia = Infinity;
+		Matter.World.add(this.engine.world, this.body);
+	}
 
-        Matter.Body.setPosition(this.body, {
-            x: this.screenX,
-            y: this.worldY
-        });
+	setupControls(app)
+	{
+		app.stage.eventMode = 'static';
+		app.stage.hitArea = app.screen;
 
-    }
+		app.stage.on('pointerdown', (e) =>
+		{
+			const currentTime = Date.now();
+			if (currentTime - this.lastClickTime < this.clickCooldown)
+			{
+				return;
+			}
+			this.lastClickTime = currentTime;
 
-    getWorldX() { return this.worldX; }
-    getWorldY() { return this.worldY; }
+			const worldPos = this.camera.screenToWorld(e.global.x, e.global.y);
 
-    getBoostPercentage()
-    {
-        return (this.boostForce / this.maxBoostForce) * 100;
-    }
+			switch (this.currentState)
+			{
+				case this.STATES.HOVER:
+					this.currentState = this.STATES.CONTROLLED;
+					this.targetX = worldPos.x;
+					this.targetY = worldPos.y;
+					break;
 
-    setupControls(app)
-    {
-        app.stage.on('mousedown', (e) =>
-        {
-            this.isFlying = true;
-            this.mouseScreenPosition = e.global;
-            this.mouseWorldPosition = this.camera.screenToWorld(
-                this.mouseScreenPosition.x,
-                this.mouseScreenPosition.y
-            )
-        });
-        app.stage.on('mouseup', (e) =>
-        {
-            this.isFlying = false;
-            this.mouseScreenPosition = e.global;
-            this.mouseWorldPosition = this.camera.screenToWorld(
-                this.mouseScreenPosition.x,
-                this.mouseScreenPosition.y
-            )
-        });
-        app.stage.on('touchstart', (e) =>
-        {
-            this.isFlying = true;
-            this.mouseScreenPosition = e.global;
-            this.mouseWorldPosition = this.camera.screenToWorld(
-                this.mouseScreenPosition.x,
-                this.mouseScreenPosition.y
-            )
-        });
-        app.stage.on('touchend', (e) =>
-        {
-            this.isFlying = false;
-            this.mouseScreenPosition = e.global;
-            this.mouseWorldPosition = this.camera.screenToWorld(
-                this.mouseScreenPosition.x,
-                this.mouseScreenPosition.y
-            )
-        });
-    }
+				case this.STATES.FREE:
+					this.currentState = this.STATES.STABILIZING;
+					break;
+			}
+		});
+
+		app.stage.on('pointermove', (e) =>
+		{
+			if (this.currentState === this.STATES.CONTROLLED)
+			{
+				const worldPos = this.camera.screenToWorld(e.global.x, e.global.y);
+				this.targetX = worldPos.x;
+				this.targetY = worldPos.y;
+			}
+		});
+	}
+
+	update()
+	{
+		switch (this.currentState)
+		{
+			case this.STATES.CONTROLLED:
+				this.updateControlled();
+				break;
+			case this.STATES.FREE:
+				this.updateFree();
+				break;
+			case this.STATES.STABILIZING:
+				this.updateStabilizing();
+				break;
+			case this.STATES.HOVER:
+				this.updateHover();
+				break;
+		}
+
+		this.worldX += this.velocity.x;
+		this.worldY += this.velocity.y;
+
+		this.graphics.x = this.worldX;
+		this.graphics.y = this.worldY;
+
+		this.updateGraphicsColor();
+
+		// Smoother rotation with minimum threshold and lerping
+		if (Math.abs(this.velocity.x) > 0.1 || Math.abs(this.velocity.y) > 0.1)
+		{
+			const targetRotation = Math.atan2(this.velocity.y, this.velocity.x);
+
+			// Normalize current and target rotation to prevent flip
+			let currentRotation = this.graphics.rotation;
+			while (currentRotation < -Math.PI) currentRotation += Math.PI * 2;
+			while (currentRotation > Math.PI) currentRotation -= Math.PI * 2;
+
+			let targetNormalized = targetRotation;
+			while (targetNormalized < -Math.PI) targetNormalized += Math.PI * 2;
+			while (targetNormalized > Math.PI) targetNormalized -= Math.PI * 2;
+
+			// Find shortest rotation path
+			let diff = targetNormalized - currentRotation;
+			if (diff > Math.PI) diff -= Math.PI * 2;
+			if (diff < -Math.PI) diff += Math.PI * 2;
+
+			this.graphics.rotation = currentRotation + diff * 0.2;
+		}
+
+		Matter.Body.setPosition(this.body, { x: this.worldX, y: this.worldY });
+		Matter.Body.setAngle(this.body, this.graphics.rotation);
+	}
+
+	updateControlled()
+	{
+		const dx = this.targetX - this.worldX;
+		const dy = this.targetY - this.worldY;
+		const distance = Math.sqrt(dx * dx + dy * dy);
+
+		if (this.currentBoost <= 0 && !this.isDiving)
+		{
+			this.currentState = this.STATES.FREE;
+			console.log('Boost depleted, entering free state');
+			return;
+		}
+
+		if (distance > 0.1)
+		{
+			const dirX = dx / distance;
+			const dirY = dy / distance;
+
+			const moveAngle = Math.atan2(dirY, dirX);
+			const upwardComponent = -Math.sin(moveAngle);
+
+			if (this.velocity.y > 2)
+			{
+				if (upwardComponent > 0)
+				{
+					this.isDiving = true;
+					this.diveBoostTimer = this.diveBoostDuration;
+				}
+			}
+
+			this.velocity.x += dirX * this.followForce;
+
+			// Moving upward
+			if (upwardComponent > 0)
+			{
+				if (!this.isDiving)
+				{
+					const drainMultiplier = upwardComponent;
+					this.currentBoost -= this.boostDrainRate * drainMultiplier;
+					this.velocity.y += dirY * this.followForce;
+				}
+				else
+				{
+					this.velocity.y += dirY * this.followForce * 1.5;
+				}
+			}
+			else
+			// Going downward
+			{
+				this.velocity.y += dirY * this.followForce * this.divingSpeed;
+
+				if (upwardComponent < 0)
+				{
+					const recoveryMultiplier = -upwardComponent;
+					this.currentBoost = Math.min(
+						this.maxBoost,
+						this.currentBoost + (this.boostRecoveryRate * recoveryMultiplier)
+					);
+				}
+			}
+
+			if (this.isDiving)
+			{
+				this.diveBoostTimer--;
+				if (this.diveBoostTimer <= 0)
+				{
+					this.isDiving = false;
+				}
+			}
+
+			this.velocity.x *= 0.995;
+		}
+
+		this.velocity.y += this.gravity;
+		this.currentBoost = Math.max(0, Math.min(this.maxBoost, this.currentBoost));
+	}
+
+
+	updateFree()
+	{
+		this.velocity.y += this.gravity;
+		this.velocity.x *= 0.99;
+	}
+
+	updateStabilizing()
+	{
+		const speed = Math.sqrt(this.velocity.x * this.velocity.x + this.velocity.y * this.velocity.y);
+
+		if (speed < 0.5)
+		{
+			this.currentState = this.STATES.HOVER;
+			this.velocity.x = 0;
+			this.velocity.y = 0;
+			return;
+		}
+
+		const angle = Math.atan2(this.velocity.y, this.velocity.x);
+		this.velocity.x -= Math.cos(angle) * this.stabilizeForce;
+		this.velocity.y -= Math.sin(angle) * this.stabilizeForce;
+		this.velocity.y += this.gravity;
+		this.velocity.x *= 0.98;
+		this.velocity.y *= 0.98;
+	}
+
+	updateHover()
+	{
+		if (Math.abs(this.velocity.x) > 0.5 || Math.abs(this.velocity.y) > 0.5)
+		{
+			this.velocity.x *= 0.9;
+			this.velocity.y *= 0.9;
+		}
+
+		this.velocity.y = Math.sin(Date.now() / 200) * 0.3;
+		this.velocity.x *= 0.95;
+		this.currentBoost = Math.min(this.maxBoost, this.currentBoost + this.boostRecoveryRate);
+	}
+
+	updateGraphicsAndBody()
+	{
+		this.graphics.x = this.worldX;
+		this.graphics.y = this.worldY;
+
+		if (Math.abs(this.velocity.x) > 0.1 || Math.abs(this.velocity.y) > 0.1)
+		{
+			this.graphics.rotation = Math.atan2(this.velocity.y, this.velocity.x);
+		}
+
+		Matter.Body.setPosition(this.body, { x: this.worldX, y: this.worldY });
+		Matter.Body.setAngle(this.body, this.graphics.rotation);
+	}
+
+	updateGraphicsColor()
+	{
+		const boostPercentage = this.getBoostPercentage();
+		const color = Math.floor(0xFF * (boostPercentage / 100)) << 16; // Red color that fades with boost
+		this.graphics.clear();
+		this.graphics.moveTo(this.size, 0);
+		this.graphics.lineTo(-this.size, -this.size);
+		this.graphics.lineTo(-this.size, this.size);
+		this.graphics.lineTo(this.size, 0);
+		this.graphics.fill(color);
+	}
+
+	getBoostPercentage()
+	{
+		return (this.currentBoost / this.maxBoost) * 100;
+	}
+
+	canEnterControlled()
+	{
+		return this.currentBoost > 0;
+	}
 }

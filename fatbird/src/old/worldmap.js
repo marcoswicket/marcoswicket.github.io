@@ -21,12 +21,11 @@ export class WorldMap
             for (let j = 0; j < sectionsCount; j++)
             {
                 const section = new PIXI.Graphics();
-                section.beginFill(colors[i]);
 
                 const numberOfRectangles = Math.ceil(sectionWidth / this.rectangleSpacing);
                 for (let k = 0; k < numberOfRectangles; k++)
                 {
-                    section.drawRect(
+                    section.rect(
                         k * this.rectangleSpacing,
                         300 + (i * 50),
                         this.rectangleWidth,
@@ -34,7 +33,7 @@ export class WorldMap
                     );
                 }
 
-                section.endFill();
+                section.fill(colors[i]);
                 section.x = j * sectionWidth;
                 sections.push(section);
             }
@@ -102,12 +101,11 @@ export class WorldMap
             layer.sections.forEach((section, index) =>
             {
                 section.clear();
-                section.beginFill(section.children[0]?.tint || 0x4488FF);
 
                 const numberOfRectangles = Math.ceil(sectionWidth / this.rectangleSpacing);
                 for (let k = 0; k < numberOfRectangles; k++)
                 {
-                    section.drawRect(
+                    section.rect(
                         k * this.rectangleSpacing,
                         300 + (layer.container.speed * 100),
                         this.rectangleWidth,
@@ -115,7 +113,7 @@ export class WorldMap
                     );
                 }
 
-                section.endFill();
+                section.fill(section.children[0]?.tint || 0x4488FF);
                 section.x = index * sectionWidth;
             });
         });
