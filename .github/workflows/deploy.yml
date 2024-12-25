@@ -14,14 +14,20 @@ jobs:
       - name: Checkout 🛎️
         uses: actions/checkout@v3
 
-      - name: Install and Build 🔧
+      - name: Setup Dist
+        run: |
+          mkdir -p dist
+          cp -r particle dist/
+
+      - name: Build FatBird
         run: |
           cd fatbird
           npm install
           npm run build
+          cp -r dist ../dist/fatbird
 
       - name: Deploy 🚀
         uses: JamesIves/github-pages-deploy-action@v4
         with:
-          folder: fatbird/dist
+          folder: dist
           branch: gh-pages
