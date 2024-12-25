@@ -18,7 +18,7 @@ jobs:
         run: |
           mkdir -p dist
           cp index.html dist/
-          cp CNAME ./
+          cp CNAME dist/
 
       - name: Build FatBird
         run: |
