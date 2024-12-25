@@ -1,4 +1,5 @@
 import * as PIXI from 'pixi.js';
+
 import vertexShader from './background.vert?raw';
 import fragmentShader from './background.frag?raw';
 
