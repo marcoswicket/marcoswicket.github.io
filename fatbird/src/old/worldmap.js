@@ -59,7 +59,7 @@ export class WorldMap
 
     update(worldX)
     {
-        if (!this.camera) return;
+        if (!this.camera) return;0
 
         this.layers.forEach(layer =>
         {

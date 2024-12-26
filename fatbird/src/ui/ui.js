@@ -17,9 +17,9 @@ export class UI
             top: new PIXI.Container()         // top layer
         };
 
-        this.layers.background.zIndex = 0;
-        this.layers.middle.zIndex = 1;
-        this.layers.top.zIndex = 2;
+        this.layers.background.zIndex = 990;
+        this.layers.middle.zIndex = 991;
+        this.layers.top.zIndex = 992;
 
         Object.values(this.layers).forEach(layer =>
         {
